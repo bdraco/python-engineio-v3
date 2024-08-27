@@ -1,5 +1,5 @@
 """
-python-engineio
+python-engineio-v3
 ---------------
 
 Engine.IO server.
@@ -9,7 +9,7 @@ import sys
 from setuptools import setup
 
 
-with open('engineio/__init__.py', 'r') as f:
+with open('engineio_v3/__init__.py', 'r') as f:
     version = re.search(r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]',
                         f.read(), re.MULTILINE).group(1)
 
@@ -19,13 +19,13 @@ with open('README.rst', 'r') as f:
 setup(
     name='python-engineio',
     version=version,
-    url='http://github.com/miguelgrinberg/python-engineio/',
+    url='http://github.com/bdraco/python-engineio-v3/',
     license='MIT',
     author='Miguel Grinberg',
     author_email='miguelgrinberg50@gmail.com',
     description='Engine.IO server',
     long_description=long_description,
-    packages=['engineio', 'engineio.async_drivers'],
+    packages=['engineio_v3', 'engineio_v3.async_drivers'],
     zip_safe=False,
     include_package_data=True,
     platforms='any',
