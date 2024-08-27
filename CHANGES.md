@@ -1,4 +1,6 @@
-# python-engineio change log
+# python-engineio-v3 change log
+
+This is a back-compat release of python-engineio 3.14.2 as `engineio_v3` to avoid a namespace conflict.
 
 **Release 3.14.2** - 2020-11-30
 
