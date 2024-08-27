@@ -67,10 +67,10 @@ class AsyncServer(server.Server):
     def async_modes(self):
         return ['aiohttp', 'sanic', 'tornado', 'asgi']
 
-    def attach(self, app, engineio_path='engine.io'):
+    def attach(self, app, engineio_v3_path='engine.io'):
         """Attach the Engine.IO server to an application."""
-        engineio_path = engineio_path.strip('/')
-        self._async['create_route'](app, self, '/{}/'.format(engineio_path))
+        engineio_v3_path = engineio_v3_path.strip('/')
+        self._async['create_route'](app, self, '/{}/'.format(engineio_v3_path))
 
     async def send(self, sid, data, binary=None):
         """Send a message to a client.

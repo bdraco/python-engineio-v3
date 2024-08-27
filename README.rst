@@ -9,6 +9,10 @@ python-engineio
 
 Python implementation of the `Engine.IO`_ realtime client and server.
 
+This is a release of 3.14.2 under the "engineio_v3" namespace for old systems.
+
+
+
 Resources
 ---------
 

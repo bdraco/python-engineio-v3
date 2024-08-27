@@ -2,8 +2,8 @@ import unittest
 
 import six
 
-from engineio import packet
-from engineio import payload
+from engineio_v3 import packet
+from engineio_v3 import payload
 import pytest
 
 

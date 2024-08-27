@@ -4,7 +4,7 @@ API Reference
 .. toctree::
    :maxdepth: 3
 
-.. module:: engineio
+.. module:: engineio_v3
 
 ``Client`` class
 ----------------

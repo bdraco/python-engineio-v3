@@ -10,14 +10,14 @@ except ImportError:
 import six
 
 
-def create_route(app, engineio_server, engineio_endpoint):  # pragma: no cover
+def create_route(app, engineio_v3_server, engineio_v3_endpoint):  # pragma: no cover
     """This function sets up the engine.io endpoint as a route for the
     application.
 
     Note that both GET and POST requests must be hooked up on the engine.io
     endpoint.
     """
-    app.add_route(engineio_server.handle_request, engineio_endpoint,
+    app.add_route(engineio_v3_server.handle_request, engineio_v3_endpoint,
                   methods=['GET', 'POST', 'OPTIONS'])
     try:
         app.enable_websocket()

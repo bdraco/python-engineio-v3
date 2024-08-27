@@ -8,14 +8,14 @@ if six.PY3:
 else:
     import mock
 
-import engineio
+import engineio_v3
 
 
 class TestWSGIApp(unittest.TestCase):
     def test_wsgi_routing(self):
         mock_wsgi_app = mock.MagicMock()
         mock_eio_app = 'foo'
-        m = engineio.WSGIApp(mock_eio_app, mock_wsgi_app)
+        m = engineio_v3.WSGIApp(mock_eio_app, mock_wsgi_app)
         environ = {'PATH_INFO': '/foo'}
         start_response = "foo"
         m(environ, start_response)
@@ -25,7 +25,7 @@ class TestWSGIApp(unittest.TestCase):
         mock_wsgi_app = 'foo'
         mock_eio_app = mock.Mock()
         mock_eio_app.handle_request = mock.MagicMock()
-        m = engineio.WSGIApp(mock_eio_app, mock_wsgi_app)
+        m = engineio_v3.WSGIApp(mock_eio_app, mock_wsgi_app)
         environ = {'PATH_INFO': '/engine.io/'}
         start_response = "foo"
         m(environ, start_response)
@@ -35,7 +35,7 @@ class TestWSGIApp(unittest.TestCase):
 
     def test_static_files(self):
         root_dir = os.path.dirname(__file__)
-        m = engineio.WSGIApp(
+        m = engineio_v3.WSGIApp(
             'foo',
             None,
             static_files={
@@ -99,7 +99,7 @@ class TestWSGIApp(unittest.TestCase):
     def test_404(self):
         mock_wsgi_app = None
         mock_eio_app = mock.Mock()
-        m = engineio.WSGIApp(mock_eio_app, mock_wsgi_app)
+        m = engineio_v3.WSGIApp(mock_eio_app, mock_wsgi_app)
         environ = {'PATH_INFO': '/foo/bar'}
         start_response = mock.MagicMock()
         r = m(environ, start_response)
@@ -112,7 +112,7 @@ class TestWSGIApp(unittest.TestCase):
         mock_wsgi_app = None
         mock_eio_app = mock.Mock()
         mock_eio_app.handle_request = mock.MagicMock()
-        m = engineio.WSGIApp(mock_eio_app, mock_wsgi_app, engineio_path='foo')
+        m = engineio_v3.WSGIApp(mock_eio_app, mock_wsgi_app, engineio_v3_path='foo')
         environ = {'PATH_INFO': '/engine.io/'}
         start_response = mock.MagicMock()
         r = m(environ, start_response)
@@ -131,8 +131,8 @@ class TestWSGIApp(unittest.TestCase):
         mock_wsgi_app = None
         mock_eio_app = mock.Mock()
         mock_eio_app.handle_request = mock.MagicMock()
-        m = engineio.WSGIApp(
-            mock_eio_app, mock_wsgi_app, engineio_path='/foo/'
+        m = engineio_v3.WSGIApp(
+            mock_eio_app, mock_wsgi_app, engineio_v3_path='/foo/'
         )
         environ = {'PATH_INFO': '/foo/'}
         start_response = mock.MagicMock()
@@ -145,7 +145,7 @@ class TestWSGIApp(unittest.TestCase):
         mock_wsgi_app = None
         mock_eio_app = mock.Mock()
         mock_eio_app.handle_request = mock.MagicMock()
-        m = engineio.WSGIApp(mock_eio_app, mock_wsgi_app, engineio_path='/foo')
+        m = engineio_v3.WSGIApp(mock_eio_app, mock_wsgi_app, engineio_v3_path='/foo')
         environ = {'PATH_INFO': '/foo/'}
         start_response = mock.MagicMock()
         m(environ, start_response)
@@ -157,7 +157,7 @@ class TestWSGIApp(unittest.TestCase):
         mock_wsgi_app = None
         mock_eio_app = mock.Mock()
         mock_eio_app.handle_request = mock.MagicMock()
-        m = engineio.WSGIApp(mock_eio_app, mock_wsgi_app, engineio_path='foo/')
+        m = engineio_v3.WSGIApp(mock_eio_app, mock_wsgi_app, engineio_v3_path='foo/')
         environ = {'PATH_INFO': '/foo/'}
         start_response = mock.MagicMock()
         m(environ, start_response)
@@ -168,7 +168,7 @@ class TestWSGIApp(unittest.TestCase):
     def test_gunicorn_socket(self):
         mock_wsgi_app = None
         mock_eio_app = mock.Mock()
-        m = engineio.WSGIApp(mock_eio_app, mock_wsgi_app)
+        m = engineio_v3.WSGIApp(mock_eio_app, mock_wsgi_app)
         environ = {'gunicorn.socket': 123, 'PATH_INFO': '/foo/bar'}
         start_response = mock.MagicMock()
         m(environ, start_response)
@@ -176,8 +176,8 @@ class TestWSGIApp(unittest.TestCase):
         assert environ['eventlet.input'].get_socket() == 123
 
     def test_legacy_middleware_class(self):
-        m = engineio.Middleware('eio', 'wsgi', 'eio_path')
-        assert m.engineio_app == 'eio'
+        m = engineio_v3.Middleware('eio', 'wsgi', 'eio_path')
+        assert m.engineio_v3_app == 'eio'
         assert m.wsgi_app == 'wsgi'
         assert m.static_files == {}
-        assert m.engineio_path == 'eio_path'
+        assert m.engineio_v3_path == 'eio_path'

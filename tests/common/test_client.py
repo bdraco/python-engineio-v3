@@ -12,10 +12,10 @@ else:
     import mock
 import websocket
 
-from engineio import client
-from engineio import exceptions
-from engineio import packet
-from engineio import payload
+from engineio_v3 import client
+from engineio_v3 import exceptions
+from engineio_v3 import packet
+from engineio_v3 import payload
 import pytest
 
 if six.PY2:
@@ -298,8 +298,8 @@ class TestClient(unittest.TestCase):
         e.set()
         assert e.is_set()
 
-    @mock.patch('engineio.client.time.time', return_value=123.456)
-    @mock.patch('engineio.client.Client._send_request', return_value=None)
+    @mock.patch('engineio_v3.client.time.time', return_value=123.456)
+    @mock.patch('engineio_v3.client.Client._send_request', return_value=None)
     def test_polling_connection_failed(self, _send_request, _time):
         c = client.Client()
         with pytest.raises(exceptions.ConnectionError):
@@ -311,7 +311,7 @@ class TestClient(unittest.TestCase):
             timeout=5,
         )
 
-    @mock.patch('engineio.client.Client._send_request')
+    @mock.patch('engineio_v3.client.Client._send_request')
     def test_polling_connection_404(self, _send_request):
         _send_request.return_value.status_code = 404
         _send_request.return_value.json.return_value = {'foo': 'bar'}
@@ -325,7 +325,7 @@ class TestClient(unittest.TestCase):
             )
             assert exc.args[1] == {'foo': 'bar'}
 
-    @mock.patch('engineio.client.Client._send_request')
+    @mock.patch('engineio_v3.client.Client._send_request')
     def test_polling_connection_404_no_json(self, _send_request):
         _send_request.return_value.status_code = 404
         _send_request.return_value.json.side_effect = json.JSONDecodeError(
@@ -340,7 +340,7 @@ class TestClient(unittest.TestCase):
             )
             assert exc.args[1] is None
 
-    @mock.patch('engineio.client.Client._send_request')
+    @mock.patch('engineio_v3.client.Client._send_request')
     def test_polling_connection_invalid_packet(self, _send_request):
         _send_request.return_value.status_code = 200
         _send_request.return_value.content = b'foo'
@@ -348,7 +348,7 @@ class TestClient(unittest.TestCase):
         with pytest.raises(exceptions.ConnectionError):
             c.connect('http://foo')
 
-    @mock.patch('engineio.client.Client._send_request')
+    @mock.patch('engineio_v3.client.Client._send_request')
     def test_polling_connection_no_open_packet(self, _send_request):
         _send_request.return_value.status_code = 200
         _send_request.return_value.content = payload.Payload(
@@ -368,7 +368,7 @@ class TestClient(unittest.TestCase):
         with pytest.raises(exceptions.ConnectionError):
             c.connect('http://foo')
 
-    @mock.patch('engineio.client.Client._send_request')
+    @mock.patch('engineio_v3.client.Client._send_request')
     def test_polling_connection_successful(self, _send_request):
         _send_request.return_value.status_code = 200
         _send_request.return_value.content = payload.Payload(
@@ -410,7 +410,7 @@ class TestClient(unittest.TestCase):
         assert c.upgrades == []
         assert c.transport() == 'polling'
 
-    @mock.patch('engineio.client.Client._send_request')
+    @mock.patch('engineio_v3.client.Client._send_request')
     def test_polling_https_noverify_connection_successful(self, _send_request):
         _send_request.return_value.status_code = 200
         _send_request.return_value.content = payload.Payload(
@@ -452,7 +452,7 @@ class TestClient(unittest.TestCase):
         assert c.upgrades == []
         assert c.transport() == 'polling'
 
-    @mock.patch('engineio.client.Client._send_request')
+    @mock.patch('engineio_v3.client.Client._send_request')
     def test_polling_connection_with_more_packets(self, _send_request):
         _send_request.return_value.status_code = 200
         _send_request.return_value.content = payload.Payload(
@@ -485,7 +485,7 @@ class TestClient(unittest.TestCase):
             == packet.NOOP
         )
 
-    @mock.patch('engineio.client.Client._send_request')
+    @mock.patch('engineio_v3.client.Client._send_request')
     def test_polling_connection_upgraded(self, _send_request):
         _send_request.return_value.status_code = 200
         _send_request.return_value.content = payload.Payload(
@@ -521,7 +521,7 @@ class TestClient(unittest.TestCase):
         assert c.ping_timeout == 2
         assert c.upgrades == ['websocket']
 
-    @mock.patch('engineio.client.Client._send_request')
+    @mock.patch('engineio_v3.client.Client._send_request')
     def test_polling_connection_not_upgraded(self, _send_request):
         _send_request.return_value.status_code = 200
         _send_request.return_value.content = payload.Payload(
@@ -558,9 +558,9 @@ class TestClient(unittest.TestCase):
         on_connect.assert_called_once_with()
         assert c in client.connected_clients
 
-    @mock.patch('engineio.client.time.time', return_value=123.456)
+    @mock.patch('engineio_v3.client.time.time', return_value=123.456)
     @mock.patch(
-        'engineio.client.websocket.create_connection',
+        'engineio_v3.client.websocket.create_connection',
         side_effect=[ConnectionError],
     )
     def test_websocket_connection_failed(self, create_connection, _time):
@@ -576,9 +576,9 @@ class TestClient(unittest.TestCase):
             enable_multithread=True,
         )
 
-    @mock.patch('engineio.client.time.time', return_value=123.456)
+    @mock.patch('engineio_v3.client.time.time', return_value=123.456)
     @mock.patch(
-        'engineio.client.websocket.create_connection',
+        'engineio_v3.client.websocket.create_connection',
         side_effect=[websocket.WebSocketException],
     )
     def test_websocket_connection_failed_with_websocket_error(
@@ -596,9 +596,9 @@ class TestClient(unittest.TestCase):
             enable_multithread=True,
         )
 
-    @mock.patch('engineio.client.time.time', return_value=123.456)
+    @mock.patch('engineio_v3.client.time.time', return_value=123.456)
     @mock.patch(
-        'engineio.client.websocket.create_connection',
+        'engineio_v3.client.websocket.create_connection',
         side_effect=[ConnectionError],
     )
     def test_websocket_upgrade_failed(self, create_connection, _time):
@@ -612,7 +612,7 @@ class TestClient(unittest.TestCase):
             enable_multithread=True,
         )
 
-    @mock.patch('engineio.client.websocket.create_connection')
+    @mock.patch('engineio_v3.client.websocket.create_connection')
     def test_websocket_connection_no_open_packet(self, create_connection):
         create_connection.return_value.recv.return_value = packet.Packet(
             packet.CLOSE
@@ -621,7 +621,7 @@ class TestClient(unittest.TestCase):
         with pytest.raises(exceptions.ConnectionError):
             c.connect('http://foo', transports=['websocket'])
 
-    @mock.patch('engineio.client.websocket.create_connection')
+    @mock.patch('engineio_v3.client.websocket.create_connection')
     def test_websocket_connection_successful(self, create_connection):
         create_connection.return_value.recv.return_value = packet.Packet(
             packet.OPEN,
@@ -662,7 +662,7 @@ class TestClient(unittest.TestCase):
             'enable_multithread': True,
         }
 
-    @mock.patch('engineio.client.websocket.create_connection')
+    @mock.patch('engineio_v3.client.websocket.create_connection')
     def test_websocket_https_noverify_connection_successful(
         self, create_connection
     ):
@@ -706,7 +706,7 @@ class TestClient(unittest.TestCase):
             'sslopt': {'cert_reqs': ssl.CERT_NONE},
         }
 
-    @mock.patch('engineio.client.websocket.create_connection')
+    @mock.patch('engineio_v3.client.websocket.create_connection')
     def test_websocket_connection_with_cookies(self, create_connection):
         create_connection.return_value.recv.return_value = packet.Packet(
             packet.OPEN,
@@ -743,7 +743,7 @@ class TestClient(unittest.TestCase):
             'enable_multithread': True,
         }
 
-    @mock.patch('engineio.client.websocket.create_connection')
+    @mock.patch('engineio_v3.client.websocket.create_connection')
     def test_websocket_connection_with_cookie_header(self, create_connection):
         create_connection.return_value.recv.return_value = packet.Packet(
             packet.OPEN,
@@ -780,7 +780,7 @@ class TestClient(unittest.TestCase):
             'enable_multithread': True,
         }
 
-    @mock.patch('engineio.client.websocket.create_connection')
+    @mock.patch('engineio_v3.client.websocket.create_connection')
     def test_websocket_connection_with_cookies_and_headers(
         self, create_connection
     ):
@@ -823,7 +823,7 @@ class TestClient(unittest.TestCase):
             'cookie': 'key=value; key2=value2; key3=value3',
         }
 
-    @mock.patch('engineio.client.websocket.create_connection')
+    @mock.patch('engineio_v3.client.websocket.create_connection')
     def test_websocket_connection_with_auth(self, create_connection):
         create_connection.return_value.recv.return_value = packet.Packet(
             packet.OPEN,
@@ -855,7 +855,7 @@ class TestClient(unittest.TestCase):
             'enable_multithread': True,
         }
 
-    @mock.patch('engineio.client.websocket.create_connection')
+    @mock.patch('engineio_v3.client.websocket.create_connection')
     def test_websocket_connection_with_cert(self, create_connection):
         create_connection.return_value.recv.return_value = packet.Packet(
             packet.OPEN,
@@ -888,7 +888,7 @@ class TestClient(unittest.TestCase):
             'enable_multithread': True,
         }
 
-    @mock.patch('engineio.client.websocket.create_connection')
+    @mock.patch('engineio_v3.client.websocket.create_connection')
     def test_websocket_connection_with_cert_and_key(self, create_connection):
         create_connection.return_value.recv.return_value = packet.Packet(
             packet.OPEN,
@@ -921,7 +921,7 @@ class TestClient(unittest.TestCase):
             'enable_multithread': True,
         }
 
-    @mock.patch('engineio.client.websocket.create_connection')
+    @mock.patch('engineio_v3.client.websocket.create_connection')
     def test_websocket_connection_with_proxies(self, create_connection):
         all_urls = [
             'ws://foo',
@@ -988,7 +988,7 @@ class TestClient(unittest.TestCase):
                     'http_proxy_auth': results[2]})
             assert create_connection.call_args[1] == expected_results
 
-    @mock.patch('engineio.client.websocket.create_connection')
+    @mock.patch('engineio_v3.client.websocket.create_connection')
     def test_websocket_connection_without_verify(self, create_connection):
         create_connection.return_value.recv.return_value = packet.Packet(
             packet.OPEN,
@@ -1022,7 +1022,7 @@ class TestClient(unittest.TestCase):
             'enable_multithread': True,
         }
 
-    @mock.patch('engineio.client.websocket.create_connection')
+    @mock.patch('engineio_v3.client.websocket.create_connection')
     def test_websocket_upgrade_no_pong(self, create_connection):
         create_connection.return_value.recv.return_value = packet.Packet(
             packet.OPEN,
@@ -1051,7 +1051,7 @@ class TestClient(unittest.TestCase):
         on_connect.assert_not_called()
         assert c.transport() == 'polling'
 
-    @mock.patch('engineio.client.websocket.create_connection')
+    @mock.patch('engineio_v3.client.websocket.create_connection')
     def test_websocket_upgrade_successful(self, create_connection):
         create_connection.return_value.recv.return_value = packet.Packet(
             packet.PONG, six.text_type('probe')
@@ -1175,38 +1175,38 @@ class TestClient(unittest.TestCase):
         r = c._trigger_event('message', 123, run_async=False)
         assert r is None
 
-    def test_engineio_url(self):
+    def test_engineio_v3_url(self):
         c = client.Client()
         assert (
-            c._get_engineio_url('http://foo', 'bar', 'polling')
+            c._get_engineio_v3_url('http://foo', 'bar', 'polling')
             == 'http://foo/bar/?transport=polling&EIO=3'
         )
         assert (
-            c._get_engineio_url('http://foo', 'bar', 'websocket')
+            c._get_engineio_v3_url('http://foo', 'bar', 'websocket')
             == 'ws://foo/bar/?transport=websocket&EIO=3'
         )
         assert (
-            c._get_engineio_url('ws://foo', 'bar', 'polling')
+            c._get_engineio_v3_url('ws://foo', 'bar', 'polling')
             == 'http://foo/bar/?transport=polling&EIO=3'
         )
         assert (
-            c._get_engineio_url('ws://foo', 'bar', 'websocket')
+            c._get_engineio_v3_url('ws://foo', 'bar', 'websocket')
             == 'ws://foo/bar/?transport=websocket&EIO=3'
         )
         assert (
-            c._get_engineio_url('https://foo', 'bar', 'polling')
+            c._get_engineio_v3_url('https://foo', 'bar', 'polling')
             == 'https://foo/bar/?transport=polling&EIO=3'
         )
         assert (
-            c._get_engineio_url('https://foo', 'bar', 'websocket')
+            c._get_engineio_v3_url('https://foo', 'bar', 'websocket')
             == 'wss://foo/bar/?transport=websocket&EIO=3'
         )
         assert (
-            c._get_engineio_url('http://foo?baz=1', 'bar', 'polling')
+            c._get_engineio_v3_url('http://foo?baz=1', 'bar', 'polling')
             == 'http://foo/bar/?baz=1&transport=polling&EIO=3'
         )
         assert (
-            c._get_engineio_url('http://foo#baz', 'bar', 'polling')
+            c._get_engineio_v3_url('http://foo#baz', 'bar', 'polling')
             == 'http://foo/bar/?transport=polling&EIO=3'
         )
 
@@ -1284,7 +1284,7 @@ class TestClient(unittest.TestCase):
         c.ping_loop_task.join.assert_called_once_with()
         c._trigger_event.assert_not_called()
 
-    @mock.patch('engineio.client.time.time', return_value=123.456)
+    @mock.patch('engineio_v3.client.time.time', return_value=123.456)
     def test_read_loop_polling_no_response(self, _time):
         c = client.Client()
         c.ping_interval = 25
@@ -1306,7 +1306,7 @@ class TestClient(unittest.TestCase):
         )
         c._trigger_event.assert_called_once_with('disconnect', run_async=False)
 
-    @mock.patch('engineio.client.time.time', return_value=123.456)
+    @mock.patch('engineio_v3.client.time.time', return_value=123.456)
     def test_read_loop_polling_bad_status(self, _time):
         c = client.Client()
         c.ping_interval = 25
@@ -1327,7 +1327,7 @@ class TestClient(unittest.TestCase):
             'GET', 'http://foo&t=123.456', timeout=30
         )
 
-    @mock.patch('engineio.client.time.time', return_value=123.456)
+    @mock.patch('engineio_v3.client.time.time', return_value=123.456)
     def test_read_loop_polling_bad_packet(self, _time):
         c = client.Client()
         c.ping_interval = 25
@@ -1702,7 +1702,7 @@ class TestClient(unittest.TestCase):
         c._write_loop()
         assert c.state == 'connected'
 
-    @mock.patch('engineio.client.original_signal_handler')
+    @mock.patch('engineio_v3.client.original_signal_handler')
     def test_signal_handler(self, original_handler):
         clients = [mock.MagicMock(), mock.MagicMock()]
         client.connected_clients = clients[:]

@@ -13,11 +13,11 @@ if six.PY3:
 else:
     import mock
 
-from engineio import asyncio_server
-from engineio.async_drivers import aiohttp as async_aiohttp
-from engineio import exceptions
-from engineio import packet
-from engineio import payload
+from engineio_v3 import asyncio_server
+from engineio_v3.async_drivers import aiohttp as async_aiohttp
+from engineio_v3 import exceptions
+from engineio_v3 import packet
+from engineio_v3 import payload
 import pytest
 
 
@@ -81,7 +81,7 @@ class TestAsyncServer(unittest.TestCase):
         asyncio_server.AsyncServer._default_monitor_clients = True
 
     def setUp(self):
-        logging.getLogger('engineio').setLevel(logging.NOTSET)
+        logging.getLogger('engineio_v3').setLevel(logging.NOTSET)
 
     def tearDown(self):
         # restore JSON encoder, in case a test changed it
@@ -125,13 +125,13 @@ class TestAsyncServer(unittest.TestCase):
         a = self.get_async_mock()
         import_module.side_effect = [a]
         s = asyncio_server.AsyncServer()
-        s.attach('app', engineio_path='abc')
+        s.attach('app', engineio_v3_path='abc')
         a._async['create_route'].assert_called_with('app', s, '/abc/')
-        s.attach('app', engineio_path='/def/')
+        s.attach('app', engineio_v3_path='/def/')
         a._async['create_route'].assert_called_with('app', s, '/def/')
-        s.attach('app', engineio_path='/ghi')
+        s.attach('app', engineio_v3_path='/ghi')
         a._async['create_route'].assert_called_with('app', s, '/ghi/')
-        s.attach('app', engineio_path='jkl/')
+        s.attach('app', engineio_v3_path='jkl/')
         a._async['create_route'].assert_called_with('app', s, '/jkl/')
 
     def test_session(self):
@@ -376,7 +376,7 @@ class TestAsyncServer(unittest.TestCase):
         assert packets[0].data['pingTimeout'] == 123000
         assert packets[0].data['pingInterval'] == 456000
 
-    @mock.patch('engineio.asyncio_socket.AsyncSocket')
+    @mock.patch('engineio_v3.asyncio_socket.AsyncSocket')
     @mock.patch('importlib.import_module')
     def test_connect_bad_poll(self, import_module, AsyncSocket):
         a = self.get_async_mock()
@@ -388,7 +388,7 @@ class TestAsyncServer(unittest.TestCase):
         assert a._async['make_response'].call_count == 1
         assert a._async['make_response'].call_args[0][0] == '400 BAD REQUEST'
 
-    @mock.patch('engineio.asyncio_socket.AsyncSocket')
+    @mock.patch('engineio_v3.asyncio_socket.AsyncSocket')
     @mock.patch('importlib.import_module')
     def test_connect_transport_websocket(self, import_module, AsyncSocket):
         a = self.get_async_mock(
@@ -410,7 +410,7 @@ class TestAsyncServer(unittest.TestCase):
             == packet.OPEN
         )
 
-    @mock.patch('engineio.asyncio_socket.AsyncSocket')
+    @mock.patch('engineio_v3.asyncio_socket.AsyncSocket')
     @mock.patch('importlib.import_module')
     def test_connect_transport_websocket_closed(
         self, import_module, AsyncSocket

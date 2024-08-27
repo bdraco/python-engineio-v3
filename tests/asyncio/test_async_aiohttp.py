@@ -9,7 +9,7 @@ else:
     import mock
 
 if sys.version_info >= (3, 5):
-    from engineio.async_drivers import aiohttp as async_aiohttp
+    from engineio_v3.async_drivers import aiohttp as async_aiohttp
 
 
 @unittest.skipIf(sys.version_info < (3, 5), 'only for Python 3.5+')

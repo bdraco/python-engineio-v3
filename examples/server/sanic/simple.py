@@ -1,9 +1,9 @@
 from sanic import Sanic
 from sanic.response import html
 
-import engineio
+import engineio_v3
 
-eio = engineio.AsyncServer(async_mode='sanic')
+eio = engineio_v3.AsyncServer(async_mode='sanic')
 app = Sanic()
 eio.attach(app)
 

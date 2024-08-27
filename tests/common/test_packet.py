@@ -2,7 +2,7 @@ import unittest
 
 import six
 
-from engineio import packet
+from engineio_v3 import packet
 
 
 class TestPacket(unittest.TestCase):
@@ -101,7 +101,7 @@ class TestPacket(unittest.TestCase):
         pkt = packet.Packet(encoded_packet=b'4123')
         assert pkt.packet_type == packet.MESSAGE
         # integer payloads are parsed as strings, see
-        # https://github.com/miguelgrinberg/python-engineio/issues/75
+        # https://github.com/miguelgrinberg/python-engineio_v3/issues/75
         # for background on this decision
         assert pkt.data == '123'
         assert not pkt.binary

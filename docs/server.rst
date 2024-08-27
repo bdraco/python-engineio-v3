@@ -3,9 +3,9 @@ The Engine.IO Server
 
 This package contains two Engine.IO servers:
 
-- The :func:`engineio.Server` class creates a server compatible with the
+- The :func:`engineio_v3.Server` class creates a server compatible with the
   standard Python library.
-- The :func:`engineio.AsyncServer` class creates a server compatible with
+- The :func:`engineio_v3.AsyncServer` class creates a server compatible with
   the ``asyncio`` package.
 
 The methods in the two servers are the same, with the only difference that in
@@ -16,7 +16,7 @@ Installation
 
 To install the Python Engine.IO server use the following command::
 
-    pip install "python-engineio"
+    pip install "python-engineio_v3"
 
 In addition to the server, you will need to select an asynchronous framework
 or server to use along with it. The list of supported packages is covered
@@ -25,35 +25,35 @@ in the :ref:`deployment-strategies` section.
 Creating a Server Instance
 --------------------------
 
-An Engine.IO server is an instance of class :class:`engineio.Server`. This
+An Engine.IO server is an instance of class :class:`engineio_v3.Server`. This
 instance can be transformed into a standard WSGI application by wrapping it
-with the :class:`engineio.WSGIApp` class::
+with the :class:`engineio_v3.WSGIApp` class::
 
-   import engineio
+   import engineio_v3
 
    # create a Engine.IO server
-   eio = engineio.Server()
+   eio = engineio_v3.Server()
 
    # wrap with a WSGI application
-   app = engineio.WSGIApp(eio)
+   app = engineio_v3.WSGIApp(eio)
 
-For asyncio based servers, the :class:`engineio.AsyncServer` class provides
+For asyncio based servers, the :class:`engineio_v3.AsyncServer` class provides
 the same functionality, but in a coroutine friendly format. If desired, The
-:class:`engineio.ASGIApp` class can transform the server into a standard
+:class:`engineio_v3.ASGIApp` class can transform the server into a standard
 ASGI application::
 
     # create a Engine.IO server
-    eio = engineio.AsyncServer()
+    eio = engineio_v3.AsyncServer()
 
     # wrap with ASGI application
-    app = engineio.ASGIApp(eio)
+    app = engineio_v3.ASGIApp(eio)
 
 These two wrappers can also act as middlewares, forwarding any traffic that is
 not intended to the Engine.IO server to another application. This allows
 Engine.IO servers to integrate easily into existing WSGI or ASGI applications::
 
    from wsgi import app  # a Flask, Django, etc. application
-   app = engineio.WSGIApp(eio, app)
+   app = engineio_v3.WSGIApp(eio, app)
 
 Serving Static Files
 --------------------
@@ -124,15 +124,15 @@ specified if needed::
     }
 
 The static file configuration dictionary is given as the ``static_files``
-argument to the ``engineio.WSGIApp`` or ``engineio.ASGIApp`` classes::
+argument to the ``engineio_v3.WSGIApp`` or ``engineio_v3.ASGIApp`` classes::
 
     # for standard WSGI applications
-    eio = engineio.Server()
-    app = engineio.WSGIApp(eio, static_files=static_files)
+    eio = engineio_v3.Server()
+    app = engineio_v3.WSGIApp(eio, static_files=static_files)
 
     # for asyncio-based ASGI applications
-    eio = engineio.AsyncServer()
-    app = engineio.ASGIApp(eio, static_files=static_files)
+    eio = engineio_v3.AsyncServer()
+    app = engineio_v3.ASGIApp(eio, static_files=static_files)
 
 The routing precedence in these two classes is as follows:
 
@@ -331,13 +331,13 @@ Debugging and Troubleshooting
 To help you debug issues, the server can be configured to output logs to the
 terminal::
 
-    import engineio
+    import engineio_v3
 
     # standard Python
-    eio = engineio.Server(logger=True)
+    eio = engineio_v3.Server(logger=True)
 
     # asyncio
-    eio = engineio.AsyncServer(logger=True)
+    eio = engineio_v3.AsyncServer(logger=True)
 
 The ``logger`` argument can be set to ``True`` to output logs to ``stderr``, or
 to an object compatible with Python's ``logging`` package where the logs should
@@ -361,11 +361,11 @@ aiohttp
 for HTTP and WebSocket, based on asyncio. Support for this framework is limited
 to Python 3.5 and newer.
 
-Instances of class ``engineio.AsyncServer`` will automatically use aiohttp
+Instances of class ``engineio_v3.AsyncServer`` will automatically use aiohttp
 for asynchronous operations if the library is installed. To request its use
 explicitly, the ``async_mode`` option can be given in the constructor::
 
-    eio = engineio.AsyncServer(async_mode='aiohttp')
+    eio = engineio_v3.AsyncServer(async_mode='aiohttp')
 
 A server configured for aiohttp must be attached to an existing application::
 
@@ -389,18 +389,18 @@ for HTTP and WebSocket. Support for this framework requires Python 3.5 and
 newer. Only Tornado version 5 and newer are supported, thanks to its tight
 integration with asyncio.
 
-Instances of class ``engineio.AsyncServer`` will automatically use tornado
+Instances of class ``engineio_v3.AsyncServer`` will automatically use tornado
 for asynchronous operations if the library is installed. To request its use
 explicitly, the ``async_mode`` option can be given in the constructor::
 
-    eio = engineio.AsyncServer(async_mode='tornado')
+    eio = engineio_v3.AsyncServer(async_mode='tornado')
 
 A server configured for tornado must include a request handler for
 Engine.IO::
 
     app = tornado.web.Application(
         [
-            (r"/engine.io/", engineio.get_tornado_handler(eio)),
+            (r"/engine.io/", engineio_v3.get_tornado_handler(eio)),
         ],
         # ... other application options
     )
@@ -420,11 +420,11 @@ Sanic
 `Sanic <http://sanic.readthedocs.io/>`_ is a very efficient asynchronous web
 server for Python 3.5 and newer.
 
-Instances of class ``engineio.AsyncServer`` will automatically use Sanic for
+Instances of class ``engineio_v3.AsyncServer`` will automatically use Sanic for
 asynchronous operations if the framework is installed. To request its use
 explicitly, the ``async_mode`` option can be given in the constructor::
 
-    eio = engineio.AsyncServer(async_mode='sanic')
+    eio = engineio_v3.AsyncServer(async_mode='sanic')
 
 A server configured for Sanic must be attached to an existing application::
 
@@ -445,7 +445,7 @@ It has been reported that the CORS support provided by the Sanic extension
 this package's own support for this protocol. To disable CORS support in this
 package and let Sanic take full control, initialize the server as follows::
 
-    eio = engineio.AsyncServer(async_mode='sanic', cors_allowed_origins=[])
+    eio = engineio_v3.AsyncServer(async_mode='sanic', cors_allowed_origins=[])
 
 On the Sanic side you will need to enable the `CORS_SUPPORTS_CREDENTIALS`
 setting in addition to any other configuration that you use::
@@ -455,11 +455,11 @@ setting in addition to any other configuration that you use::
 Uvicorn, Daphne, and other ASGI servers
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The ``engineio.ASGIApp`` class is an ASGI compatible application that can
-forward Engine.IO traffic to an ``engineio.AsyncServer`` instance::
+The ``engineio_v3.ASGIApp`` class is an ASGI compatible application that can
+forward Engine.IO traffic to an ``engineio_v3.AsyncServer`` instance::
 
-   eio = engineio.AsyncServer(async_mode='asgi')
-   app = engineio.ASGIApp(eio)
+   eio = engineio_v3.AsyncServer(async_mode='asgi')
+   app = engineio_v3.ASGIApp(eio)
 
 The application can then be deployed with any ASGI compatible web server.
 
@@ -472,16 +472,16 @@ the same style used with the blocking standard library functions. An Engine.IO
 server deployed with eventlet has access to the long-polling and WebSocket
 transports.
 
-Instances of class ``engineio.Server`` will automatically use eventlet for
+Instances of class ``engineio_v3.Server`` will automatically use eventlet for
 asynchronous operations if the library is installed. To request its use
 explicitly, the ``async_mode`` option can be given in the constructor::
 
-    eio = engineio.Server(async_mode='eventlet')
+    eio = engineio_v3.Server(async_mode='eventlet')
 
 A server configured for eventlet is deployed as a regular WSGI application
-using the provided ``engineio.WSGIApp``::
+using the provided ``engineio_v3.WSGIApp``::
 
-    app = engineio.WSGIApp(eio)
+    app = engineio_v3.WSGIApp(eio)
     import eventlet
     eventlet.wsgi.server(eventlet.listen(('', 8000)), app)
 
@@ -503,7 +503,7 @@ available, because this transport it requires extensions to the WSGI standard.
 
 Note: Eventlet provides a ``monkey_patch()`` function that replaces all the
 blocking functions in the standard library with equivalent asynchronous
-versions. While python-engineio does not require monkey patching, other
+versions. While python-engineio_v3 does not require monkey patching, other
 libraries such as database drivers are likely to require it.
 
 Gevent
@@ -517,19 +517,19 @@ installed, the WebSocket transport is also available. Note that when using the
 uWSGI server, the native WebSocket implementation of uWSGI can be used instead
 of gevent-websocket (see next section for details on this).
 
-Instances of class ``engineio.Server`` will automatically use gevent for
+Instances of class ``engineio_v3.Server`` will automatically use gevent for
 asynchronous operations if the library is installed and eventlet is not
 installed. To request gevent to be selected explicitly, the ``async_mode``
 option can be given in the constructor::
 
     # gevent alone or with gevent-websocket
-    eio = engineio.Server(async_mode='gevent')
+    eio = engineio_v3.Server(async_mode='gevent')
 
 A server configured for gevent is deployed as a regular WSGI application
-using the provided ``engineio.WSGIApp``::
+using the provided ``engineio_v3.WSGIApp``::
 
     from gevent import pywsgi
-    app = engineio.WSGIApp(eio)
+    app = engineio_v3.WSGIApp(eio)
     pywsgi.WSGIServer(('', 8000), app).serve_forever()
 
 If the WebSocket transport is installed, then the server must be started as
@@ -537,7 +537,7 @@ follows::
 
     from gevent import pywsgi
     from geventwebsocket.handler import WebSocketHandler
-    app = engineio.WSGIApp(eio)
+    app = engineio_v3.WSGIApp(eio)
     pywsgi.WSGIServer(('', 8000), app,
                       handler_class=WebSocketHandler).serve_forever()
 
@@ -561,7 +561,7 @@ concurrent clients.
 
 Note: Gevent provides a ``monkey_patch()`` function that replaces all the
 blocking functions in the standard library with equivalent asynchronous
-versions. While python-engineio does not require monkey patching, other
+versions. While python-engineio_v3 does not require monkey patching, other
 libraries such as database drivers are likely to require it.
 
 uWSGI
@@ -570,13 +570,13 @@ uWSGI
 When using the uWSGI server in combination with gevent, the Engine.IO server
 can take advantage of uWSGI's native WebSocket support.
 
-Instances of class ``engineio.Server`` will automatically use this option for
+Instances of class ``engineio_v3.Server`` will automatically use this option for
 asynchronous operations if both gevent and uWSGI are installed and eventlet is
 not installed. To request this asynchoronous mode explicitly, the
 ``async_mode`` option can be given in the constructor::
 
     # gevent with uWSGI
-    eio = engineio.Server(async_mode='gevent_uwsgi')
+    eio = engineio_v3.Server(async_mode='gevent_uwsgi')
 
 A complete explanation of the configuration and usage of the uWSGI server is
 beyond the scope of this documentation. The uWSGI server is a fairly complex
@@ -596,21 +596,21 @@ servers that use standard Python threads. This is an ideal setup to use with
 development servers such as `Werkzeug <http://werkzeug.pocoo.org>`_. Only the
 long-polling transport is currently available when using standard threads.
 
-Instances of class ``engineio.Server`` will automatically use the threading
+Instances of class ``engineio_v3.Server`` will automatically use the threading
 mode if neither eventlet nor gevent are not installed. To request the
 threading mode explicitly, the ``async_mode`` option can be given in the
 constructor::
 
-    eio = engineio.Server(async_mode='threading')
+    eio = engineio_v3.Server(async_mode='threading')
 
 A server configured for threading is deployed as a regular web application,
 using any WSGI complaint multi-threaded server. The example below deploys an
 Engine.IO application combined with a Flask web application, using Flask's
 development web server based on Werkzeug::
 
-    eio = engineio.Server(async_mode='threading')
+    eio = engineio_v3.Server(async_mode='threading')
     app = Flask(__name__)
-    app.wsgi_app = engineio.WSGIApp(eio, app.wsgi_app)
+    app.wsgi_app = engineio_v3.WSGIApp(eio, app.wsgi_app)
 
     # ... Engine.IO and Flask handler functions ...
 

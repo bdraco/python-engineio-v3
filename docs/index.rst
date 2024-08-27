@@ -1,9 +1,9 @@
-.. python-engineio documentation master file, created by
+.. python-engineio_v3 documentation master file, created by
    sphinx-quickstart on Sat Nov 24 09:42:25 2018.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-python-engineio
+python-engineio_v3
 ===============
 
 This project implements Python based Engine.IO client and server that can run

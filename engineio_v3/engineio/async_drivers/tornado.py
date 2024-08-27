@@ -8,19 +8,19 @@ import tornado.websocket
 import six
 
 
-def get_tornado_handler(engineio_server):
+def get_tornado_handler(engineio_v3_server):
     class Handler(tornado.websocket.WebSocketHandler):  # pragma: no cover
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
-            if isinstance(engineio_server.cors_allowed_origins,
+            if isinstance(engineio_v3_server.cors_allowed_origins,
                           six.string_types):
-                if engineio_server.cors_allowed_origins == '*':
+                if engineio_v3_server.cors_allowed_origins == '*':
                     self.allowed_origins = None
                 else:
                     self.allowed_origins = [
-                        engineio_server.cors_allowed_origins]
+                        engineio_v3_server.cors_allowed_origins]
             else:
-                self.allowed_origins = engineio_server.cors_allowed_origins
+                self.allowed_origins = engineio_v3_server.cors_allowed_origins
             self.receive_queue = asyncio.Queue()
 
         async def get(self, *args, **kwargs):
@@ -29,17 +29,17 @@ def get_tornado_handler(engineio_server):
                 if asyncio.iscoroutine(ret):
                     await ret
             else:
-                await engineio_server.handle_request(self)
+                await engineio_v3_server.handle_request(self)
 
         async def open(self, *args, **kwargs):
             # this is the handler for the websocket request
-            asyncio.ensure_future(engineio_server.handle_request(self))
+            asyncio.ensure_future(engineio_v3_server.handle_request(self))
 
         async def post(self, *args, **kwargs):
-            await engineio_server.handle_request(self)
+            await engineio_v3_server.handle_request(self)
 
         async def options(self, *args, **kwargs):
-            await engineio_server.handle_request(self)
+            await engineio_v3_server.handle_request(self)
 
         async def on_message(self, message):
             await self.receive_queue.put(message)

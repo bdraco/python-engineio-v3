@@ -1,7 +1,7 @@
 import time
-import engineio
+import engineio_v3
 
-eio = engineio.Client()
+eio = engineio_v3.Client()
 start_timer = None
 
 

@@ -1,8 +1,8 @@
 from aiohttp import web
 
-import engineio
+import engineio_v3
 
-eio = engineio.AsyncServer(async_mode='aiohttp')
+eio = engineio_v3.AsyncServer(async_mode='aiohttp')
 app = web.Application()
 eio.attach(app)
 

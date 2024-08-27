@@ -11,7 +11,7 @@ else:
 
 if sys.version_info >= (3, 5):
     import asyncio
-    from engineio.async_drivers import asgi as async_asgi
+    from engineio_v3.async_drivers import asgi as async_asgi
 
 
 def AsyncMock(*args, **kwargs):
@@ -37,14 +37,14 @@ class AsgiTests(unittest.TestCase):
             'eio',
             'other_app',
             static_files='static_files',
-            engineio_path='/foo',
+            engineio_v3_path='/foo',
         )
-        assert app.engineio_server == 'eio'
+        assert app.engineio_v3_server == 'eio'
         assert app.other_asgi_app == 'other_app'
         assert app.static_files == 'static_files'
-        assert app.engineio_path == 'foo'
+        assert app.engineio_v3_path == 'foo'
 
-    def test_engineio_routing(self):
+    def test_engineio_v3_routing(self):
         mock_server = mock.MagicMock()
         mock_server.handle_request = AsyncMock()
         app = async_asgi.ASGIApp(mock_server)

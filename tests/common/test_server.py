@@ -14,10 +14,10 @@ if six.PY3:
 else:
     import mock
 
-from engineio import exceptions
-from engineio import packet
-from engineio import payload
-from engineio import server
+from engineio_v3 import exceptions
+from engineio_v3 import packet
+from engineio_v3 import payload
+from engineio_v3 import server
 import pytest
 
 
@@ -25,7 +25,7 @@ original_import_module = importlib.import_module
 
 
 def _mock_import(module, *args, **kwargs):
-    if module.startswith('engineio.'):
+    if module.startswith('engineio_v3.'):
         return original_import_module(module, *args, **kwargs)
     return module
 
@@ -56,7 +56,7 @@ class TestServer(unittest.TestCase):
         server.Server._default_monitor_clients = True
 
     def setUp(self):
-        logging.getLogger('engineio').setLevel(logging.NOTSET)
+        logging.getLogger('engineio_v3').setLevel(logging.NOTSET)
 
     def tearDown(self):
         # restore JSON encoder, in case a test changed it
@@ -122,7 +122,7 @@ class TestServer(unittest.TestCase):
 
         from eventlet.green import threading
         from eventlet import queue
-        from engineio.async_drivers import eventlet as async_eventlet
+        from engineio_v3.async_drivers import eventlet as async_eventlet
 
         assert s._async['thread'] == threading.Thread
         assert s._async['queue'] == queue.Queue
@@ -141,7 +141,7 @@ class TestServer(unittest.TestCase):
         s = server.Server(async_mode='gevent_uwsgi')
         assert s.async_mode == 'gevent_uwsgi'
 
-        from engineio.async_drivers import gevent_uwsgi as async_gevent_uwsgi
+        from engineio_v3.async_drivers import gevent_uwsgi as async_gevent_uwsgi
 
         assert s._async['thread'] == async_gevent_uwsgi.Thread
         assert s._async['queue'] == 'foo'
@@ -152,7 +152,7 @@ class TestServer(unittest.TestCase):
         del sys.modules['gevent.queue']
         del sys.modules['gevent.event']
         del sys.modules['uwsgi']
-        del sys.modules['engineio.async_drivers.gevent_uwsgi']
+        del sys.modules['engineio_v3.async_drivers.gevent_uwsgi']
 
     @mock.patch('importlib.import_module', side_effect=_mock_import)
     def test_async_mode_gevent_uwsgi_without_uwsgi(self, import_module):
@@ -185,7 +185,7 @@ class TestServer(unittest.TestCase):
         s = server.Server(async_mode='gevent_uwsgi')
         assert s.async_mode == 'gevent_uwsgi'
 
-        from engineio.async_drivers import gevent_uwsgi as async_gevent_uwsgi
+        from engineio_v3.async_drivers import gevent_uwsgi as async_gevent_uwsgi
 
         assert s._async['thread'] == async_gevent_uwsgi.Thread
         assert s._async['queue'] == 'foo'
@@ -196,7 +196,7 @@ class TestServer(unittest.TestCase):
         del sys.modules['gevent.queue']
         del sys.modules['gevent.event']
         del sys.modules['uwsgi']
-        del sys.modules['engineio.async_drivers.gevent_uwsgi']
+        del sys.modules['engineio_v3.async_drivers.gevent_uwsgi']
 
     @mock.patch('importlib.import_module', side_effect=_mock_import)
     def test_async_mode_gevent(self, import_module):
@@ -211,7 +211,7 @@ class TestServer(unittest.TestCase):
         s = server.Server(async_mode='gevent')
         assert s.async_mode == 'gevent'
 
-        from engineio.async_drivers import gevent as async_gevent
+        from engineio_v3.async_drivers import gevent as async_gevent
 
         assert s._async['thread'] == async_gevent.Thread
         assert s._async['queue'] == 'foo'
@@ -222,7 +222,7 @@ class TestServer(unittest.TestCase):
         del sys.modules['gevent.queue']
         del sys.modules['gevent.event']
         del sys.modules['geventwebsocket']
-        del sys.modules['engineio.async_drivers.gevent']
+        del sys.modules['engineio_v3.async_drivers.gevent']
 
     @mock.patch('importlib.import_module', side_effect=_mock_import)
     def test_async_mode_gevent_without_websocket(self, import_module):
@@ -237,7 +237,7 @@ class TestServer(unittest.TestCase):
         s = server.Server(async_mode='gevent')
         assert s.async_mode == 'gevent'
 
-        from engineio.async_drivers import gevent as async_gevent
+        from engineio_v3.async_drivers import gevent as async_gevent
 
         assert s._async['thread'] == async_gevent.Thread
         assert s._async['queue'] == 'foo'
@@ -248,7 +248,7 @@ class TestServer(unittest.TestCase):
         del sys.modules['gevent.queue']
         del sys.modules['gevent.event']
         del sys.modules['geventwebsocket']
-        del sys.modules['engineio.async_drivers.gevent']
+        del sys.modules['engineio_v3.async_drivers.gevent']
 
     @unittest.skipIf(sys.version_info < (3, 5), 'only for Python 3.5+')
     @mock.patch('importlib.import_module', side_effect=_mock_import)
@@ -541,7 +541,7 @@ class TestServer(unittest.TestCase):
         assert packets[0].data['pingInterval'] == 456000
 
     @mock.patch(
-        'engineio.socket.Socket.poll', side_effect=exceptions.QueueEmpty
+        'engineio_v3.socket.Socket.poll', side_effect=exceptions.QueueEmpty
     )
     def test_connect_bad_poll(self, poll):
         s = server.Server()
@@ -551,7 +551,7 @@ class TestServer(unittest.TestCase):
         assert start_response.call_args[0][0] == '400 BAD REQUEST'
 
     @mock.patch(
-        'engineio.socket.Socket',
+        'engineio_v3.socket.Socket',
         return_value=mock.MagicMock(connected=False, closed=False),
     )
     def test_connect_transport_websocket(self, Socket):
@@ -569,7 +569,7 @@ class TestServer(unittest.TestCase):
         assert s.sockets['123'].send.call_args[0][0].packet_type == packet.OPEN
 
     @mock.patch(
-        'engineio.socket.Socket',
+        'engineio_v3.socket.Socket',
         return_value=mock.MagicMock(connected=False, closed=False),
     )
     def test_connect_transport_websocket_closed(self, Socket):

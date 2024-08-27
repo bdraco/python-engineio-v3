@@ -24,7 +24,7 @@ from . import exceptions
 from . import packet
 from . import payload
 
-default_logger = logging.getLogger('engineio.client')
+default_logger = logging.getLogger('engineio_v3.client')
 connected_clients = []
 
 if six.PY2:  # pragma: no cover
@@ -159,7 +159,7 @@ class Client(object):
         set_handler(handler)
 
     def connect(self, url, headers=None, transports=None,
-                engineio_path='engine.io'):
+                engineio_v3_path='engine.io'):
         """Connect to an Engine.IO server.
 
         :param url: The URL of the Engine.IO server. It can include custom
@@ -170,13 +170,13 @@ class Client(object):
                            are ``'polling'`` and ``'websocket'``. If not
                            given, the polling transport is connected first,
                            then an upgrade to websocket is attempted.
-        :param engineio_path: The endpoint where the Engine.IO server is
+        :param engineio_v3_path: The endpoint where the Engine.IO server is
                               installed. The default value is appropriate for
                               most cases.
 
         Example usage::
 
-            eio = engineio.Client()
+            eio = engineio_v3.Client()
             eio.connect('http://localhost:5000')
         """
         if self.state != 'disconnected':
@@ -192,7 +192,7 @@ class Client(object):
         self.transports = transports or valid_transports
         self.queue = self.create_queue()
         return getattr(self, '_connect_' + self.transports[0])(
-            url, headers or {}, engineio_path)
+            url, headers or {}, engineio_v3_path)
 
     def wait(self):
         """Wait until the connection with the server ends.
@@ -283,14 +283,14 @@ class Client(object):
         self.state = 'disconnected'
         self.sid = None
 
-    def _connect_polling(self, url, headers, engineio_path):
+    def _connect_polling(self, url, headers, engineio_v3_path):
         """Establish a long-polling connection to the Engine.IO server."""
         if requests is None:  # pragma: no cover
             # not installed
             self.logger.error('requests package is not installed -- cannot '
                               'send HTTP requests!')
             return
-        self.base_url = self._get_engineio_url(url, engineio_path, 'polling')
+        self.base_url = self._get_engineio_v3_url(url, engineio_v3_path, 'polling')
         self.logger.info('Attempting polling connection to ' + self.base_url)
         r = self._send_request(
             'GET', self.base_url + self._get_url_timestamp(), headers=headers,
@@ -335,7 +335,7 @@ class Client(object):
 
         if 'websocket' in self.upgrades and 'websocket' in self.transports:
             # attempt to upgrade to websocket
-            if self._connect_websocket(url, headers, engineio_path):
+            if self._connect_websocket(url, headers, engineio_v3_path):
                 # upgrade to websocket succeeded, we're done here
                 return
 
@@ -345,14 +345,14 @@ class Client(object):
         self.read_loop_task = self.start_background_task(
             self._read_loop_polling)
 
-    def _connect_websocket(self, url, headers, engineio_path):
+    def _connect_websocket(self, url, headers, engineio_v3_path):
         """Establish or upgrade to a WebSocket connection with the server."""
         if websocket is None:  # pragma: no cover
             # not installed
             self.logger.warning('websocket-client package not installed, only '
                                 'polling transport is available')
             return False
-        websocket_url = self._get_engineio_url(url, engineio_path, 'websocket')
+        websocket_url = self._get_engineio_v3_url(url, engineio_v3_path, 'websocket')
         if self.sid:
             self.logger.info(
                 'Attempting WebSocket upgrade to ' + websocket_url)
@@ -550,9 +550,9 @@ class Client(object):
                 except:
                     self.logger.exception(event + ' handler error')
 
-    def _get_engineio_url(self, url, engineio_path, transport):
+    def _get_engineio_v3_url(self, url, engineio_v3_path, transport):
         """Generate the Engine.IO connection URL."""
-        engineio_path = engineio_path.strip('/')
+        engineio_v3_path = engineio_v3_path.strip('/')
         parsed_url = urllib.parse.urlparse(url)
 
         if transport == 'polling':
@@ -567,7 +567,7 @@ class Client(object):
         return ('{scheme}://{netloc}/{path}/?{query}'
                 '{sep}transport={transport}&EIO=3').format(
                     scheme=scheme, netloc=parsed_url.netloc,
-                    path=engineio_path, query=parsed_url.query,
+                    path=engineio_v3_path, query=parsed_url.query,
                     sep='&' if parsed_url.query else '',
                     transport=transport)
 

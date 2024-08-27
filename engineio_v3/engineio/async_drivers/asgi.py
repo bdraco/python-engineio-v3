@@ -2,7 +2,7 @@ import os
 import sys
 import asyncio
 
-from engineio.static_files import get_static_file
+from engineio_v3.static_files import get_static_file
 
 
 class ASGIApp:
@@ -12,12 +12,12 @@ class ASGIApp:
     also serve a list of static files to the client, or forward unrelated
     HTTP traffic to another ASGI application.
 
-    :param engineio_server: The Engine.IO server. Must be an instance of the
-                            ``engineio.AsyncServer`` class.
+    :param engineio_v3_server: The Engine.IO server. Must be an instance of the
+                            ``engineio_v3.AsyncServer`` class.
     :param static_files: A dictionary with static file mapping rules. See the
                          documentation for details on this argument.
     :param other_asgi_app: A separate ASGI app that receives all other traffic.
-    :param engineio_path: The endpoint where the Engine.IO application should
+    :param engineio_v3_path: The endpoint where the Engine.IO application should
                           be installed. The default value is appropriate for
                           most cases.
     :param on_startup: function to be called on application startup; can be
@@ -27,31 +27,31 @@ class ASGIApp:
 
     Example usage::
 
-        import engineio
+        import engineio_v3
         import uvicorn
 
-        eio = engineio.AsyncServer()
-        app = engineio.ASGIApp(eio, static_files={
+        eio = engineio_v3.AsyncServer()
+        app = engineio_v3.ASGIApp(eio, static_files={
             '/': {'content_type': 'text/html', 'filename': 'index.html'},
             '/index.html': {'content_type': 'text/html',
                             'filename': 'index.html'},
         })
         uvicorn.run(app, '127.0.0.1', 5000)
     """
-    def __init__(self, engineio_server, other_asgi_app=None,
-                 static_files=None, engineio_path='engine.io',
+    def __init__(self, engineio_v3_server, other_asgi_app=None,
+                 static_files=None, engineio_v3_path='engine.io',
                  on_startup=None, on_shutdown=None):
-        self.engineio_server = engineio_server
+        self.engineio_v3_server = engineio_v3_server
         self.other_asgi_app = other_asgi_app
-        self.engineio_path = engineio_path.strip('/')
+        self.engineio_v3_path = engineio_v3_path.strip('/')
         self.static_files = static_files or {}
         self.on_startup = on_startup
         self.on_shutdown = on_shutdown
 
     async def __call__(self, scope, receive, send):
         if scope['type'] in ['http', 'websocket'] and \
-                scope['path'].startswith('/{0}/'.format(self.engineio_path)):
-            await self.engineio_server.handle_request(scope, receive, send)
+                scope['path'].startswith('/{0}/'.format(self.engineio_v3_path)):
+            await self.engineio_v3_server.handle_request(scope, receive, send)
         else:
             static_file = get_static_file(scope['path'], self.static_files) \
                 if scope['type'] == 'http' and self.static_files else None

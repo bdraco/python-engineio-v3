@@ -1,9 +1,9 @@
 import asyncio
 import signal
-import engineio
+import engineio_v3
 
 loop = asyncio.get_event_loop()
-eio = engineio.AsyncClient()
+eio = engineio_v3.AsyncClient()
 exit_event = asyncio.Event()
 original_signal_handler = None
 

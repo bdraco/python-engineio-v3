@@ -8,13 +8,13 @@ if six.PY3:
 else:
     import mock
 
-from engineio.async_drivers import eventlet as async_eventlet
+from engineio_v3.async_drivers import eventlet as async_eventlet
 import pytest
 
 
 class TestAsyncEventlet(unittest.TestCase):
     def setUp(self):
-        logging.getLogger('engineio').setLevel(logging.NOTSET)
+        logging.getLogger('engineio_v3').setLevel(logging.NOTSET)
 
     def test_bad_environ(self):
         wsgi = async_eventlet.WebSocketWSGI(None)
@@ -24,7 +24,7 @@ class TestAsyncEventlet(unittest.TestCase):
             wsgi(environ, start_response)
 
     @mock.patch(
-        'engineio.async_drivers.eventlet._WebSocketWSGI.__call__',
+        'engineio_v3.async_drivers.eventlet._WebSocketWSGI.__call__',
         return_value='data',
     )
     def test_wsgi_call(self, _WebSocketWSGI):

@@ -3,9 +3,9 @@ The Engine.IO Client
 
 This package contains two Engine.IO clients:
 
-- The :func:`engineio.Client` class creates a client compatible with the
+- The :func:`engineio_v3.Client` class creates a client compatible with the
   standard Python library.
-- The :func:`engineio.AsyncClient` class creates a client compatible with
+- The :func:`engineio_v3.AsyncClient` class creates a client compatible with
   the ``asyncio`` package.
 
 The methods in the two clients are the same, with the only difference that in
@@ -17,11 +17,11 @@ Installation
 To install the standard Python client along with its dependencies, use the
 following command::
 
-    pip install "python-engineio[client]"
+    pip install "python-engineio_v3[client]"
 
 If instead you plan on using the ``asyncio`` client, then use this::
 
-    pip install "python-engineio[asyncio_client]"
+    pip install "python-engineio_v3[asyncio_client]"
 
 Creating a Client Instance
 --------------------------
@@ -29,13 +29,13 @@ Creating a Client Instance
 To instantiate an Engine.IO client, simply create an instance of the
 appropriate client class::
 
-    import engineio
+    import engineio_v3
 
     # standard Python
-    eio = engineio.Client()
+    eio = engineio_v3.Client()
 
     # asyncio
-    eio = engineio.AsyncClient()
+    eio = engineio_v3.AsyncClient()
 
 Defining Event Handlers
 -----------------------
@@ -180,13 +180,13 @@ Debugging and Troubleshooting
 To help you debug issues, the client can be configured to output logs to the
 terminal::
 
-    import engineio
+    import engineio_v3
 
     # standard Python
-    eio = engineio.Client(logger=True)
+    eio = engineio_v3.Client(logger=True)
 
     # asyncio
-    eio = engineio.AsyncClient(logger=True)
+    eio = engineio_v3.AsyncClient(logger=True)
 
 The ``logger`` argument can be set to ``True`` to output logs to ``stderr``, or
 to an object compatible with Python's ``logging`` package where the logs should

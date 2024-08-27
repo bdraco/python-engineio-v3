@@ -1,9 +1,9 @@
 import asyncio
 import time
-import engineio
+import engineio_v3
 
 loop = asyncio.get_event_loop()
-eio = engineio.AsyncClient()
+eio = engineio_v3.AsyncClient()
 start_timer = None
 
 

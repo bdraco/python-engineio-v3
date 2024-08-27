@@ -1,14 +1,14 @@
 from flask import Flask, render_template
 
-import engineio
+import engineio_v3
 
 # set async_mode to 'threading', 'eventlet' or 'gevent' to force a mode
 # else, the best mode is selected automatically from what's installed
 async_mode = None
 
-eio = engineio.Server(async_mode=async_mode)
+eio = engineio_v3.Server(async_mode=async_mode)
 app = Flask(__name__)
-app.wsgi_app = engineio.WSGIApp(eio, app.wsgi_app)
+app.wsgi_app = engineio_v3.WSGIApp(eio, app.wsgi_app)
 
 
 @app.route('/')

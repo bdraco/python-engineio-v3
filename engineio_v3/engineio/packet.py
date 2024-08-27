@@ -85,7 +85,7 @@ class Packet(object):
                         encoded_packet[1:].decode('utf-8'))
                     if isinstance(self.data, int):
                         # do not allow integer payloads, see
-                        # github.com/miguelgrinberg/python-engineio/issues/75
+                        # github.com/miguelgrinberg/python-engineio_v3/issues/75
                         # for background on this decision
                         raise ValueError
                 except ValueError:

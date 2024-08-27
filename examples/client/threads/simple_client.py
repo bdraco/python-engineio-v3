@@ -1,8 +1,8 @@
 import signal
 import threading
-import engineio
+import engineio_v3
 
-eio = engineio.Client()
+eio = engineio_v3.Client()
 exit_event = threading.Event()
 original_signal_handler = None
 

@@ -1,10 +1,10 @@
 import os
 import uvicorn
 
-import engineio
+import engineio_v3
 
-eio = engineio.AsyncServer(async_mode='asgi')
-app = engineio.ASGIApp(eio, static_files={
+eio = engineio_v3.AsyncServer(async_mode='asgi')
+app = engineio_v3.ASGIApp(eio, static_files={
     '/': 'simple.html',
     '/static': 'static',
 })

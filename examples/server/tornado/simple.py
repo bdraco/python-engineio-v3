@@ -4,12 +4,12 @@ import tornado.ioloop
 from tornado.options import define, options, parse_command_line
 import tornado.web
 
-import engineio
+import engineio_v3
 
 define("port", default=8888, help="run on the given port", type=int)
 define("debug", default=False, help="run in debug mode")
 
-eio = engineio.AsyncServer(async_mode='tornado')
+eio = engineio_v3.AsyncServer(async_mode='tornado')
 
 
 class MainHandler(tornado.web.RequestHandler):
@@ -38,7 +38,7 @@ def main():
     app = tornado.web.Application(
         [
             (r"/", MainHandler),
-            (r"/engine.io/", engineio.get_tornado_handler(eio)),
+            (r"/engine.io/", engineio_v3.get_tornado_handler(eio)),
         ],
         template_path=os.path.join(os.path.dirname(__file__), "templates"),
         static_path=os.path.join(os.path.dirname(__file__), "static"),

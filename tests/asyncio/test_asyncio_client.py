@@ -14,11 +14,11 @@ try:
 except ImportError:
     aiohttp = None
 
-from engineio import asyncio_client
-from engineio import client
-from engineio import exceptions
-from engineio import packet
-from engineio import payload
+from engineio_v3 import asyncio_client
+from engineio_v3 import client
+from engineio_v3 import exceptions
+from engineio_v3 import packet
+from engineio_v3 import payload
 import pytest
 
 
@@ -262,7 +262,7 @@ class TestAsyncClient(unittest.TestCase):
         e.set()
         assert e.is_set()
 
-    @mock.patch('engineio.client.time.time', return_value=123.456)
+    @mock.patch('engineio_v3.client.time.time', return_value=123.456)
     def test_polling_connection_failed(self, _time):
         c = asyncio_client.AsyncClient()
         c._send_request = AsyncMock(return_value=None)
@@ -533,7 +533,7 @@ class TestAsyncClient(unittest.TestCase):
         on_connect.assert_called_once_with()
         assert c in client.connected_clients
 
-    @mock.patch('engineio.client.time.time', return_value=123.456)
+    @mock.patch('engineio_v3.client.time.time', return_value=123.456)
     def test_websocket_connection_failed(self, _time):
         c = asyncio_client.AsyncClient()
         c.http = mock.MagicMock(closed=False)
@@ -553,7 +553,7 @@ class TestAsyncClient(unittest.TestCase):
             headers={'Foo': 'Bar'},
         )
 
-    @mock.patch('engineio.client.time.time', return_value=123.456)
+    @mock.patch('engineio_v3.client.time.time', return_value=123.456)
     def test_websocket_upgrade_failed(self, _time):
         c = asyncio_client.AsyncClient()
         c.http = mock.MagicMock(closed=False)
@@ -579,7 +579,7 @@ class TestAsyncClient(unittest.TestCase):
         with pytest.raises(exceptions.ConnectionError):
             _run(c.connect('http://foo', transports=['websocket']))
 
-    @mock.patch('engineio.client.time.time', return_value=123.456)
+    @mock.patch('engineio_v3.client.time.time', return_value=123.456)
     def test_websocket_connection_successful(self, _time):
         c = asyncio_client.AsyncClient()
         c.http = mock.MagicMock(closed=False)
@@ -621,7 +621,7 @@ class TestAsyncClient(unittest.TestCase):
             headers={},
         )
 
-    @mock.patch('engineio.client.time.time', return_value=123.456)
+    @mock.patch('engineio_v3.client.time.time', return_value=123.456)
     def test_websocket_https_noverify_connection_successful(self, _time):
         c = asyncio_client.AsyncClient(ssl_verify=False)
         c.http = mock.MagicMock(closed=False)
@@ -663,7 +663,7 @@ class TestAsyncClient(unittest.TestCase):
         assert isinstance(kwargs['ssl'], ssl.SSLContext)
         assert kwargs['ssl'].verify_mode == ssl.CERT_NONE
 
-    @mock.patch('engineio.client.time.time', return_value=123.456)
+    @mock.patch('engineio_v3.client.time.time', return_value=123.456)
     def test_websocket_connection_with_cookies(self, _time):
         c = asyncio_client.AsyncClient()
         c.http = mock.MagicMock(closed=False)
@@ -696,7 +696,7 @@ class TestAsyncClient(unittest.TestCase):
             headers={},
         )
 
-    @mock.patch('engineio.client.time.time', return_value=123.456)
+    @mock.patch('engineio_v3.client.time.time', return_value=123.456)
     def test_websocket_connection_with_cookie_header(self, _time):
         c = asyncio_client.AsyncClient()
         c.http = mock.MagicMock(closed=False)
@@ -734,7 +734,7 @@ class TestAsyncClient(unittest.TestCase):
             {'key': 'value', 'key2': 'value2', 'key3': '"value3="'}
         )
 
-    @mock.patch('engineio.client.time.time', return_value=123.456)
+    @mock.patch('engineio_v3.client.time.time', return_value=123.456)
     def test_websocket_connection_with_cookies_and_headers(self, _time):
         c = asyncio_client.AsyncClient()
         c.http = mock.MagicMock(closed=False)
@@ -1073,7 +1073,7 @@ class TestAsyncClient(unittest.TestCase):
         c._trigger_event.mock.assert_not_called()
         # should not block
 
-    @mock.patch('engineio.client.time.time', return_value=123.456)
+    @mock.patch('engineio_v3.client.time.time', return_value=123.456)
     def test_read_loop_polling_no_response(self, _time):
         c = asyncio_client.AsyncClient()
         c.ping_interval = 25
@@ -1096,7 +1096,7 @@ class TestAsyncClient(unittest.TestCase):
             'disconnect', run_async=False
         )
 
-    @mock.patch('engineio.client.time.time', return_value=123.456)
+    @mock.patch('engineio_v3.client.time.time', return_value=123.456)
     def test_read_loop_polling_bad_status(self, _time):
         c = asyncio_client.AsyncClient()
         c.ping_interval = 25
@@ -1116,7 +1116,7 @@ class TestAsyncClient(unittest.TestCase):
             'GET', 'http://foo&t=123.456', timeout=30
         )
 
-    @mock.patch('engineio.client.time.time', return_value=123.456)
+    @mock.patch('engineio_v3.client.time.time', return_value=123.456)
     def test_read_loop_polling_bad_packet(self, _time):
         c = asyncio_client.AsyncClient()
         c.ping_interval = 25
@@ -1517,7 +1517,7 @@ class TestAsyncClient(unittest.TestCase):
         _run(c._write_loop())
         assert c.state == 'connected'
 
-    @mock.patch('engineio.client.original_signal_handler')
+    @mock.patch('engineio_v3.client.original_signal_handler')
     def test_signal_handler(self, original_handler):
         clients = [mock.MagicMock(), mock.MagicMock()]
         client.connected_clients = clients[:]

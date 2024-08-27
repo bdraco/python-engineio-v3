@@ -10,10 +10,10 @@ if six.PY3:
 else:
     import mock
 
-from engineio import asyncio_socket
-from engineio import exceptions
-from engineio import packet
-from engineio import payload
+from engineio_v3 import asyncio_socket
+from engineio_v3 import exceptions
+from engineio_v3 import packet
+from engineio_v3 import payload
 import pytest
 
 

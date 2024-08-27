@@ -1,4 +1,4 @@
-.. engineio documentation master file, created by
+.. engineio_v3 documentation master file, created by
    sphinx-quickstart on Sat Jun 13 23:41:23 2015.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
@@ -25,9 +25,9 @@ Client Examples
 
 The example that follows shows a simple Python client::
 
-    import engineio
+    import engineio_v3
 
-    eio = engineio.Client()
+    eio = engineio_v3.Client()
 
     @eio.on('connect')
     def on_connect():
@@ -75,11 +75,11 @@ Server Examples
 The following application is a basic example that uses the Eventlet
 asynchronous server::
 
-    import engineio
+    import engineio_v3
     import eventlet
 
-    eio = engineio.Server()
-    app = engineio.WSGIApp(eio, static_files={
+    eio = engineio_v3.Server()
+    app = engineio_v3.WSGIApp(eio, static_files={
         '/': {'content_type': 'text/html', 'filename': 'index.html'}
     })
 
@@ -102,11 +102,11 @@ asynchronous server::
 Below is a similar application, coded for asyncio (Python 3.5+ only) and the
 Uvicorn web server::
 
-    import engineio
+    import engineio_v3
     import uvicorn
 
-    eio = engineio.AsyncServer()
-    app = engineio.ASGIApp(eio, static_files={
+    eio = engineio_v3.AsyncServer()
+    app = engineio_v3.ASGIApp(eio, static_files={
         '/': {'content_type': 'text/html', 'filename': 'index.html'}
     })
 

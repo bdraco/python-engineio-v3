@@ -63,7 +63,7 @@ class AsyncClient(client.Client):
         return True
 
     async def connect(self, url, headers=None, transports=None,
-                      engineio_path='engine.io'):
+                      engineio_v3_path='engine.io'):
         """Connect to an Engine.IO server.
 
         :param url: The URL of the Engine.IO server. It can include custom
@@ -74,7 +74,7 @@ class AsyncClient(client.Client):
                            are ``'polling'`` and ``'websocket'``. If not
                            given, the polling transport is connected first,
                            then an upgrade to websocket is attempted.
-        :param engineio_path: The endpoint where the Engine.IO server is
+        :param engineio_v3_path: The endpoint where the Engine.IO server is
                               installed. The default value is appropriate for
                               most cases.
 
@@ -82,7 +82,7 @@ class AsyncClient(client.Client):
 
         Example usage::
 
-            eio = engineio.Client()
+            eio = engineio_v3.Client()
             await eio.connect('http://localhost:5000')
         """
         global async_signal_handler_set
@@ -109,7 +109,7 @@ class AsyncClient(client.Client):
         self.transports = transports or valid_transports
         self.queue = self.create_queue()
         return await getattr(self, '_connect_' + self.transports[0])(
-            url, headers or {}, engineio_path)
+            url, headers or {}, engineio_v3_path)
 
     async def wait(self):
         """Wait until the connection with the server ends.
@@ -202,13 +202,13 @@ class AsyncClient(client.Client):
             asyncio.ensure_future(self.http.close())
         super()._reset()
 
-    async def _connect_polling(self, url, headers, engineio_path):
+    async def _connect_polling(self, url, headers, engineio_v3_path):
         """Establish a long-polling connection to the Engine.IO server."""
         if aiohttp is None:  # pragma: no cover
             self.logger.error('aiohttp not installed -- cannot make HTTP '
                               'requests!')
             return
-        self.base_url = self._get_engineio_url(url, engineio_path, 'polling')
+        self.base_url = self._get_engineio_v3_url(url, engineio_v3_path, 'polling')
         self.logger.info('Attempting polling connection to ' + self.base_url)
         r = await self._send_request(
             'GET', self.base_url + self._get_url_timestamp(), headers=headers,
@@ -253,7 +253,7 @@ class AsyncClient(client.Client):
 
         if 'websocket' in self.upgrades and 'websocket' in self.transports:
             # attempt to upgrade to websocket
-            if await self._connect_websocket(url, headers, engineio_path):
+            if await self._connect_websocket(url, headers, engineio_v3_path):
                 # upgrade to websocket succeeded, we're done here
                 return
 
@@ -262,12 +262,12 @@ class AsyncClient(client.Client):
         self.read_loop_task = self.start_background_task(
             self._read_loop_polling)
 
-    async def _connect_websocket(self, url, headers, engineio_path):
+    async def _connect_websocket(self, url, headers, engineio_v3_path):
         """Establish or upgrade to a WebSocket connection with the server."""
         if aiohttp is None:  # pragma: no cover
             self.logger.error('aiohttp package not installed')
             return False
-        websocket_url = self._get_engineio_url(url, engineio_path,
+        websocket_url = self._get_engineio_v3_url(url, engineio_v3_path,
                                                'websocket')
         if self.sid:
             self.logger.info(

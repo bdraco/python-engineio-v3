@@ -1,5 +1,5 @@
 import os
-from engineio.static_files import get_static_file
+from engineio_v3.static_files import get_static_file
 
 
 class WSGIApp(object):
@@ -9,33 +9,33 @@ class WSGIApp(object):
     also serve a list of static files to the client, or forward unrelated
     HTTP traffic to another WSGI application.
 
-    :param engineio_app: The Engine.IO server. Must be an instance of the
-                         ``engineio.Server`` class.
+    :param engineio_v3_app: The Engine.IO server. Must be an instance of the
+                         ``engineio_v3.Server`` class.
     :param wsgi_app: The WSGI app that receives all other traffic.
     :param static_files: A dictionary with static file mapping rules. See the
                          documentation for details on this argument.
-    :param engineio_path: The endpoint where the Engine.IO application should
+    :param engineio_v3_path: The endpoint where the Engine.IO application should
                           be installed. The default value is appropriate for
                           most cases.
 
     Example usage::
 
-        import engineio
+        import engineio_v3
         import eventlet
 
-        eio = engineio.Server()
-        app = engineio.WSGIApp(eio, static_files={
+        eio = engineio_v3.Server()
+        app = engineio_v3.WSGIApp(eio, static_files={
             '/': {'content_type': 'text/html', 'filename': 'index.html'},
             '/index.html': {'content_type': 'text/html',
                             'filename': 'index.html'},
         })
         eventlet.wsgi.server(eventlet.listen(('', 8000)), app)
     """
-    def __init__(self, engineio_app, wsgi_app=None, static_files=None,
-                 engineio_path='engine.io'):
-        self.engineio_app = engineio_app
+    def __init__(self, engineio_v3_app, wsgi_app=None, static_files=None,
+                 engineio_v3_path='engine.io'):
+        self.engineio_v3_app = engineio_v3_app
         self.wsgi_app = wsgi_app
-        self.engineio_path = engineio_path.strip('/')
+        self.engineio_v3_path = engineio_v3_path.strip('/')
         self.static_files = static_files or {}
 
     def __call__(self, environ, start_response):
@@ -56,8 +56,8 @@ class WSGIApp(object):
             environ['eventlet.input'] = Input(environ['gunicorn.socket'])
         path = environ['PATH_INFO']
         if path is not None and \
-                path.startswith('/{0}/'.format(self.engineio_path)):
-            return self.engineio_app.handle_request(environ, start_response)
+                path.startswith('/{0}/'.format(self.engineio_v3_path)):
+            return self.engineio_v3_app.handle_request(environ, start_response)
         else:
             static_file = get_static_file(path, self.static_files) \
                 if self.static_files else None
@@ -81,7 +81,7 @@ class WSGIApp(object):
 
 class Middleware(WSGIApp):
     """This class has been renamed to ``WSGIApp`` and is now deprecated."""
-    def __init__(self, engineio_app, wsgi_app=None,
-                 engineio_path='engine.io'):
-        super(Middleware, self).__init__(engineio_app, wsgi_app,
-                                         engineio_path=engineio_path)
+    def __init__(self, engineio_v3_app, wsgi_app=None,
+                 engineio_v3_path='engine.io'):
+        super(Middleware, self).__init__(engineio_v3_app, wsgi_app,
+                                         engineio_v3_path=engineio_v3_path)

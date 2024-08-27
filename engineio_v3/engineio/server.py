@@ -12,7 +12,7 @@ from . import packet
 from . import payload
 from . import socket
 
-default_logger = logging.getLogger('engineio.server')
+default_logger = logging.getLogger('engineio_v3.server')
 
 
 class Server(object):
@@ -133,7 +133,7 @@ class Server(object):
         for mode in modes:
             try:
                 self._async = importlib.import_module(
-                    'engineio.async_drivers.' + mode)._async
+                    'engineio_v3.async_drivers.' + mode)._async
                 asyncio_based = self._async['asyncio'] \
                     if 'asyncio' in self._async else False
                 if asyncio_based != self.is_asyncio_based():

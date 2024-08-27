@@ -6,17 +6,17 @@ from aiohttp.web import Response, WebSocketResponse
 import six
 
 
-def create_route(app, engineio_server, engineio_endpoint):
+def create_route(app, engineio_v3_server, engineio_v3_endpoint):
     """This function sets up the engine.io endpoint as a route for the
     application.
 
     Note that both GET and POST requests must be hooked up on the engine.io
     endpoint.
     """
-    app.router.add_get(engineio_endpoint, engineio_server.handle_request)
-    app.router.add_post(engineio_endpoint, engineio_server.handle_request)
-    app.router.add_route('OPTIONS', engineio_endpoint,
-                         engineio_server.handle_request)
+    app.router.add_get(engineio_v3_endpoint, engineio_v3_server.handle_request)
+    app.router.add_post(engineio_v3_endpoint, engineio_v3_server.handle_request)
+    app.router.add_route('OPTIONS', engineio_v3_endpoint,
+                         engineio_v3_server.handle_request)
 
 
 def translate_request(request):

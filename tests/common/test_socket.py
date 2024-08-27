@@ -8,10 +8,10 @@ if six.PY3:
 else:
     import mock
 
-from engineio import exceptions
-from engineio import packet
-from engineio import payload
-from engineio import socket
+from engineio_v3 import exceptions
+from engineio_v3 import packet
+from engineio_v3 import payload
+from engineio_v3 import socket
 import pytest
 
 
